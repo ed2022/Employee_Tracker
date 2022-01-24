@@ -2,10 +2,10 @@
   "name": "employee_tracker",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node main.js"
   },
   "repository": {
     "type": "git",
@@ -17,9 +17,12 @@
     "url": "https://github.com/ed2022/Employee_Tracker/issues"
   },
   "dependencies": {
+    "console.table": "^0.10.0",
     "express": "^4.17.1",
+    "fs": "^0.0.1-security",
+    "inquirer": "^6.5.2",
     "jshint": "^2.12.0",
-    "mysql2": "^2.2.5"
-  }, 
+    "mysql2": "^2.3.3"
+  },
   "homepage": "https://github.com/ed2022/Employee_Tracker#readme"
 }
