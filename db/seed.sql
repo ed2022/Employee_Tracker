@@ -1,11 +1,11 @@
 -- This is dummy data to test this application 
-INSERT INTO department (name)
+INSERT INTO departments (name)
 VALUES ("Engineering"),
        ("Finance"),
        ("Legal"),
        ("Sales");
 
-INSERT INTO role (title,salary,department_id)
+INSERT INTO roles (title,salary,departments_id)
 VALUES ("Sales Lead", 100000.00, 1),
        ("Salesperson", 80000.00, 1),
        ("Lead Engineer", 150000.00, 3),
@@ -15,7 +15,7 @@ VALUES ("Sales Lead", 100000.00, 1),
        ("Legal Team Lead", 250000.00, 4),
        ("Lawyer", 190000.00, 4);
 
-INSERT INTO employee (first_name,last_name,role_id,manager_id)
+INSERT INTO employees (first_name,last_name,roles_id,managers_id)
 VALUES ("John","Doe", 1, NULL),
        ("Mike","Chan", 2, 1),
        ("Ashley", "Rodriguez", 3, NULL),
