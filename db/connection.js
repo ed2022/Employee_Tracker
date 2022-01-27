@@ -1,7 +1,7 @@
 const mysql = require('mysql2');
 
 // Connect to database
-const db = mysql.createConnection(
+const connection = mysql.createConnection(
   {
     host: 'localhost',
     // MySQL username,
@@ -13,4 +13,4 @@ const db = mysql.createConnection(
   console.log(`Connected to the employTracker_db database.`)
 );
 
-module.exports = db; 
+module.exports = connection; 

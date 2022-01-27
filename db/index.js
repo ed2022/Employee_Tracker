@@ -1,14 +1,17 @@
 const connection = require('./connection'); //requiring this to be able to create connection 
 
-class dataBase { 
+class DB {
+    constructor(connection){
+        this.connection = connection; 
+    } 
     addDepartment(){
         return this.connection.promise().query(
         'SELECT * FROM employee'
     )}
-    addEmployee(){
+    addEmployee(emp){
         return this.connection.promise().query(
-        'SELECT * FROM employee'
-    )}
+        'INSERT INTO employees SET ?', emp)
+    }
     addRole(){
         return this.connection.promise().query(
         'SELECT * FROM employee'
@@ -18,8 +21,9 @@ class dataBase {
         'SELECT * FROM employee'
     )}
     viewAllDepartments(){ //returns table
+        console.log("Reached");
         return this.connection.promise().query(
-        'SELECT * FROM department;'
+        'SELECT departments.id, department.name FROM departments;'
     )}
     viewAllEmployees(){ //returns table
         return this.connection.promise().query(
@@ -33,7 +37,6 @@ class dataBase {
         return this.connection.promise().query(
         'SELECT * FROM employee'
     )}
-
 }
 
-module.export = new dataBase(connection); 
+module.export = new DB(connection); 
