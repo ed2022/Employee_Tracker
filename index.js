@@ -93,7 +93,7 @@ function menu(mainQuestion) {
           moreQues(addRoleQ);
           break;
         case 'View All Departments':
-          db.viewAllDepartments();
+          console.log(db.viewAllDepartments());
           menu(mainQuestion);
           break;
         case 'View All Employees':

@@ -21,17 +21,16 @@ class DB {
         'SELECT * FROM employee'
     )}
     viewAllDepartments(){ //returns table
-        console.log("Reached");
         return this.connection.promise().query(
-        'SELECT departments.id, department.name FROM departments;'
+        'SELECT departments.id, departments.name FROM departments'
     )}
     viewAllEmployees(){ //returns table
         return this.connection.promise().query(
-        'SELECT * FROM department;'
+        'SELECT employees.id, employees.first_name, employees.last_name, roles.title AS roles, roles.departments_id AS departments, roles.salary AS salary, employees.managers_id AS manager FROM employees LEFT JOIN roles ON employees.roles_id = roles.id;'
     )}
-    viewAllRole(){ //returns table
+    viewAllRole(){ //returns roles table
         return this.connection.promise().query(
-        'SELECT * FROM employee'
+        'SELECT roles.id, roles.title, departments.name AS departments, roles.salary FROM roles LEFT JOIN departments  ON roles.departments_id = departments.id;'
     )}
     updateEmpRole(){
         return this.connection.promise().query(
@@ -39,4 +38,4 @@ class DB {
     )}
 }
 
-module.export = new DB(connection); 
+module.exports = new DB(connection); 
