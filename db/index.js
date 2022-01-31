@@ -33,11 +33,12 @@ class DB {
             'SELECT role.id, role.title, department.name AS department, role.salary FROM role LEFT JOIN department  ON role.department_id = department.id;'
         )
     }
-    updateEmpRole() {
+    updateEmpRole(data) {
         return this.connection.promise().query(
-            'UPDATE employee SET role_id = (SELECT id FROM role WHERE title = "${data.updatedRole}") WHERE id = (SELECT id FROM(SELECT id FROM employee WHERE CONCAT(first_name," ",last_name) = "${data.employee}") AS dataTable)'
+            `UPDATE employee SET role_id = (SELECT id FROM role WHERE title = "${data.updatedRole}") WHERE id = (SELECT id FROM(SELECT id FROM employee WHERE CONCAT(first_name," ",last_name) = "${data.employee}") AS dataTable);`        
         )
     }
+
 }
 
 module.exports = new DB(connection); 

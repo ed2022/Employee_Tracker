@@ -64,6 +64,11 @@ const addEmpQ = [
 
 ]
 const updateQ = [
+  { //filler question 
+    type: 'input',
+    name: 'test',
+    message: 'You wanted to update employee role. Please press enter to get started!',
+  },
   {
     type: 'list',
     name: 'employee',
@@ -110,7 +115,6 @@ function menu(mainQuestion) {
             });
           }
           y();
-          console.log("emp ", addEmpQ)
           inquirer
           .prompt(addEmpQ)
           .then((data) => {
@@ -134,14 +138,39 @@ function menu(mainQuestion) {
           inquirer
           .prompt(addRoleQ)
           .then((data) => {
-            console.log("dataR: ", data);
             db.addRole(data)
             .then(data => {
-              console.log("The "+ data.title + " role was added!");
+              console.log("The role was added!");
               menu(mainQuestion);
             });
           })
           break;
+        case 'Update Employee Role':
+            function z(){
+              db.viewAllEmployees()
+              .then((data) => {
+                data[0].forEach(emp => {
+                  updateQ[1].choices.push(emp.first_name+" "+ emp.last_name); 
+                });
+              });
+              db.viewAllRole()
+              .then((data) => {
+                data[0].forEach(rol => {
+                  updateQ[2].choices.push(rol.title); 
+                });
+              });
+            }
+            z();
+            inquirer
+            .prompt(updateQ)
+            .then((data) => {
+              db.updateEmpRole(data)
+              .then(data => {
+                console.log("The role has been updated!");
+                menu(mainQuestion);
+              });
+            })
+            break;
         case 'View All Departments':
           db.viewAllDepartments()
           .then(data => {
@@ -165,35 +194,6 @@ function menu(mainQuestion) {
             console.table(data[0]); 
             menu(mainQuestion);
           });
-          break;
-        case 'Update Employee Role':
-          function z(){
-            db.viewAllEmployees()
-            .then((data) => {
-              data[0].forEach(emp => {
-                updateQ[0].choices.push(emp.first_name+" "+ emp.last_name); 
-              });
-              //console.log("emp ", updateQ[0].choices)
-            });
-            db.viewAllRole()
-            .then((data) => {
-              data[0].forEach(rol => {
-                updateQ[1].choices.push(rol.title); 
-              });
-              //console.log("emp ", updateQ[1].choices)
-            });
-          }
-          z();
-          console.log("que ", updateQ)
-          inquirer
-          .prompt(updateQ)
-          .then((data) => {
-            db.updateEmpRole(data)
-            .then(data => {
-              console.log("The role has been updated!");
-              menu(mainQuestion);
-            });
-          })
           break;
         default:
           console.log("Quit! Thank you!");
