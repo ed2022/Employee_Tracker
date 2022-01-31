@@ -8,26 +8,45 @@ console.log('|                                                |');
 console.log('|          EMPLOYEE  MANAGER  DATABASE           |');
 console.log('|________________________________________________|\n');
 
+//Main Questions 
 const mainQuestion = [{
   type: 'list',
   name: 'pick',
   message: 'What would you like to do? ',
-  choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Role', 'Add Role', 'View All Departments', 'Add Department', 'Quit']}
+  choices: ['View All Departments', 'View All Roles', 'View All Employees', 'Add Department', 'Add Role', 'Add Employee', 'Update Employee Role', 'Quit']}
 ]
 const addDepQ = [{
   type: 'input',
   name: 'addDepName',
   message: 'What is the name of the department? ',}
 ]
+const addRoleQ = [
+  {
+    type: 'input',
+    name: 'title',
+    message: 'What is the name of the role? ',
+  },
+  {
+    type: 'input',
+    name: 'salary',
+    message: 'What is the salary of the role? ',
+  },
+  {
+    type: 'list',
+    name: 'dep',
+    message: 'Which department does the role belong too?',
+    choices: []
+  }
+]
 const addEmpQ = [
   {
     type: 'input',
-    name: 'addEmpFName',
+    name: 'firstName',
     message: 'What is the first name of the employee? ',
   },
   {
     type: 'input',
-    name: 'addEmpLName',
+    name: 'lastName',
     message: 'What is the last name of the employee? ',
   },
   {
@@ -38,111 +57,148 @@ const addEmpQ = [
   },
   {
     type: 'list',
-    name: 'maName',
+    name: 'manager',
     message: 'Who is the employee\'s manager',
     choices: []
   }
 
 ]
-const addRoleQ = [
-  {
-    type: 'input',
-    name: 'addRoleName',
-    message: 'What is the name of the role? ',
-  },
-  {
-    type: 'input',
-    name: 'roleSalary',
-    message: 'What is the salary of the role? ',
-  },
-  {
-    type: 'list',
-    name: 'roleDep',
-    message: 'Which department does the role belong too?',
-    choices: ["a", "b"]
-  }
-]
 const updateQ = [
   {
     type: 'list',
-    name: 'updateRole',
+    name: 'employee',
     message: 'Which employee\'s role do you want to update?',
-    choices: ["a", "b"]
+    choices: []
   },
   {
     type: 'list',
-    name: 'reassigRole',
+    name: 'updatedRole',
     message: 'Which role do you want to assign the selected employee?',
-    choices: ["a", "b"]
-  },
+    choices: []
+  }
 ]
-
-
 function menu(mainQuestion) {
   inquirer
     .prompt(mainQuestion)
     .then((data) => {
       switch (data.pick) {
         case 'Add Department':
-          moreQues(addDepQ);
+          inquirer
+            .prompt(addDepQ)
+            .then((data) => {
+              var newDep = data.addDepName.trim(); 
+              db.addDepartment(newDep)
+              .then(data => {
+                console.log("The "+ newDep + " department was added!");
+                menu(mainQuestion);
+              });
+            })
           break;
         case 'Add Employee':
-          moreQues(addEmpQ);
+          function y(){
+            db.viewAllRole()
+            .then((data) => {
+              data[0].forEach(rol => {
+                addEmpQ[2].choices.push(rol.title); 
+              });
+            });
+            db.viewAllEmployees()
+            .then((data) => {
+              data[0].forEach(mang => {
+                addEmpQ[3].choices.push(mang.first_name+" "+mang.last_name); 
+              });
+            });
+          }
+          y();
+          console.log("emp ", addEmpQ)
+          inquirer
+          .prompt(addEmpQ)
+          .then((data) => {
+            db.addEmployee(data)
+            .then(data => {
+              console.log("Employee "+ data.firstName+ " "+ data.lastName + " was added!");
+              menu(mainQuestion);
+            });
+          })
           break;
         case 'Add Role':
-          moreQues(addRoleQ);
+          function x(){
+            db.viewAllDepartments()
+            .then((data) => {
+              data[0].forEach(dep => {
+                addRoleQ[2].choices.push(dep.name); 
+              });
+            });
+          }
+          x();
+          inquirer
+          .prompt(addRoleQ)
+          .then((data) => {
+            console.log("dataR: ", data);
+            db.addRole(data)
+            .then(data => {
+              console.log("The "+ data.title + " role was added!");
+              menu(mainQuestion);
+            });
+          })
           break;
         case 'View All Departments':
-          console.log(db.viewAllDepartments());
-          menu(mainQuestion);
+          db.viewAllDepartments()
+          .then(data => {
+            console.log(' ');
+            console.table(data[0]); 
+            menu(mainQuestion);
+          });
           break;
         case 'View All Employees':
-          db.viewAllEmployees();
-          menu(mainQuestion);
+          db.viewAllEmployees()
+          .then(data => {
+            console.log(' ');
+            console.table(data[0]); 
+            menu(mainQuestion);
+          });
           break;
-        case 'View All Role':
-          db.viewAllRole();
-          menu(mainQuestion);
+        case 'View All Roles':
+          db.viewAllRole()
+          .then(data => {
+            console.log(' ');
+            console.table(data[0]); 
+            menu(mainQuestion);
+          });
           break;
         case 'Update Employee Role':
-          moreQues(updateQ);
+          function z(){
+            db.viewAllEmployees()
+            .then((data) => {
+              data[0].forEach(emp => {
+                updateQ[0].choices.push(emp.first_name+" "+ emp.last_name); 
+              });
+              //console.log("emp ", updateQ[0].choices)
+            });
+            db.viewAllRole()
+            .then((data) => {
+              data[0].forEach(rol => {
+                updateQ[1].choices.push(rol.title); 
+              });
+              //console.log("emp ", updateQ[1].choices)
+            });
+          }
+          z();
+          console.log("que ", updateQ)
+          inquirer
+          .prompt(updateQ)
+          .then((data) => {
+            db.updateEmpRole(data)
+            .then(data => {
+              console.log("The role has been updated!");
+              menu(mainQuestion);
+            });
+          })
           break;
         default:
-          console.log("Quit! Thank you!")
-          break;
+          console.log("Quit! Thank you!");
+          process.exit(); //this will exit out of the prompt
       }
     })
 }
 menu(mainQuestion);
-
-// function moreQues(addQues) {
-//   inquirer
-//     .prompt(addQues)
-//     .then((data) => {
-//       if (data.addDepA !== '') {
-//         db.addDepartment(data.addDepName);
-//         departmentList.push(data.addDepName);
-//         console.log("Added " + data.addDepName + "to the database.");
-//         menu(mainQuestion);
-//       }
-//       else if (data.addEmpA !== '') {
-//         //var emp = {data.addEmpFName, data.addEmpLName, data.empRole}
-//         db.addEmployee(emp);
-//         console.log("Added " + data.addEmpFName + " " + data.addEmpLName + "to the database.");
-//         menu(mainQuestion);
-//       }
-//       else if (data.addRoleName !== '') {
-//         db.addRole(data.addRoleName, data.roleSalary);
-//         console.log("Added " + data.addRoleName + "to the database.");
-//         menu(mainQuestion);
-//       }
-//       else if (data.updateRole !== '') {
-//         db.updateEmpRole()(data.addRoleName, data.roleSalary);
-//         console.log("Updated employees role");
-//         menu(mainQuestion);
-//       }
-//       else {
-//         console.log("This is the moreQues function!")
-//       }
-//     })
-// }
